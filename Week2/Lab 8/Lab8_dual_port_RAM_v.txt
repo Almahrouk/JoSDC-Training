@@ -1,0 +1,30 @@
+module s_p_ram(clk, d_in, d_in_b , addr, addr_b, we, we_b, d_out, d_out_b);
+  input [3:0] d_in, d_in_b;
+  input [5:0] addr, addr_b;
+  input we, we_b;
+  input clk;
+  output [3:0] d_out, d_out_b;
+
+  reg [7:0] mem [31:0]; // a 32 byte ( 32*4 bit)  RAM  
+  reg [5:0] addr_reg, addr_reg_b;
+
+always @(posedge clk)
+begin
+  if (we)  // write operation
+    mem[addr] <= d_in;
+else //read operation
+  addr_reg <= addr;
+end
+  
+  always @(posedge clk)
+begin
+  if (we_b)  // write operation
+    mem[addr_b] <= d_in_b;
+else //read operation
+  addr_reg_b <= addr_b;
+end
+
+assign d_out = mem[addr_reg];
+  assign d_out_b = mem[addr_reg_b];  
+
+endmodule

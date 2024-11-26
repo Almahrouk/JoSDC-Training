@@ -1,0 +1,65 @@
+module s_p_ram_tb;
+  reg [3:0] d_in, d_in_b;
+  reg [5:0] addr, addr_b;
+  reg we, we_b;
+  reg clk;
+  wire [3:0] d_out, d_out_b;
+
+  s_p_ram  ram1(.clk(clk), .d_in(d_in), .addr(addr), .we(we), .d_out(d_out), .d_in_b(d_in_b), .addr_b(addr_b), .we_b(we_b), .d_out_b(d_out_b));
+
+initial begin // clock initialization
+clk =1'b1;
+forever #10 clk=~clk;
+end
+  //Dump waves (only required here)
+initial
+  begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+  end
+  
+initial
+begin
+// writing data into the memory
+we =1'b1;
+we_b =1'b1;  
+#20;
+addr=5'd0;
+d_in = 4'h1;
+  
+addr_b=5'd1;
+d_in_b = 4'h2; 
+  
+#20;
+
+addr=5'd2;
+d_in = 4'h2;
+  
+addr_b=5'd3;
+d_in_b = 4'h4; 
+
+#20;
+
+//reading data from the memory
+we = 1'b0;
+we_b = 1'b0;
+
+addr=5'd0;
+addr_b=5'd1;  
+#20;
+
+addr=5'd2;
+addr_b=5'd3;
+
+#20
+we =1'b1;
+we_b =1'b0;  
+addr=5'd4;
+d_in = 4'ha;
+  
+addr_b=5'd4;
+
+end
+ initial #300 $finish;
+
+endmodule

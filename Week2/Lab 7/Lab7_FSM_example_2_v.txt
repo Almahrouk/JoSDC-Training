@@ -1,0 +1,87 @@
+
+
+module fsm (Clock, x, y, state);
+  input  Clock;
+  input  x;
+  output y;
+  output reg [8:0] state;
+    
+    // State encodings
+  parameter [8:0]
+    STATE_A = 9'b000000001,
+    STATE_B = 9'b000000010,
+    STATE_C = 9'b000000100,
+    STATE_D = 9'b000001000,
+    STATE_E = 9'b000010000,
+    STATE_F = 9'b000100000,
+    STATE_G = 9'b001000000,
+    STATE_H = 9'b010000000,
+    STATE_I = 9'b100000000;
+  
+    
+  // State machine output
+  assign y = ((state == STATE_I) || (state == STATE_E));
+    
+  // State transitions
+  always @(posedge Clock) begin
+    case (state)
+      STATE_A:
+        if (x) begin
+          state <= STATE_F;
+        end else begin
+          state <= STATE_B;
+        end
+      STATE_B:
+        if (x) begin
+          state <= STATE_F;
+        end else begin
+          state <= STATE_C;
+        end
+      STATE_C:
+        if (x) begin
+          state <= STATE_F;
+        end else begin
+          state <= STATE_D;
+        end
+      STATE_D:
+        if (x) begin
+          state <= STATE_F;
+        end else begin
+          state <= STATE_E;
+        end
+      STATE_E:
+        if (x) begin
+          state <= STATE_F;
+        end else begin
+          state <= STATE_E;
+        end
+      STATE_F:
+        if (x) begin
+          state <= STATE_G;
+        end else begin
+          state <= STATE_B;
+        end
+      STATE_G:
+        if (x) begin
+          state <= STATE_H;
+        end else begin
+          state <= STATE_B;
+        end
+      STATE_H:
+        if (x) begin
+          state <= STATE_I;
+        end else begin
+          state <= STATE_B;
+        end
+      STATE_I:
+        if (x) begin
+          state <= STATE_I;
+        end else begin
+          state <= STATE_B;
+        end
+      default:
+        state <= STATE_A;
+    endcase
+  end
+	
+endmodule

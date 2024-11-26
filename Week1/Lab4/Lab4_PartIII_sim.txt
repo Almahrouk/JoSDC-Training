@@ -1,0 +1,29 @@
+// uses a 1-digit bcd counter enabled at 1Hz
+module part3 (Clock, digit_flipper, slow_count);
+	input Clock;
+  output reg[3:0] digit_flipper = 4'b0;
+  output reg [3:0] slow_count = 4'b0;
+
+    
+	// A large counter to produce a 1 second (approx) enable from the 50 MHz Clock
+   always @(posedge Clock)
+		begin
+          slow_count <= slow_count + 1'b1;
+        end
+
+	// four-bit counter that uses a slow enable for selecting digit
+	always @ (posedge Clock)
+      begin
+		if (slow_count == 0)
+            
+			if (digit_flipper == 4'h9)
+				digit_flipper <= 4'h0;
+
+	 		else
+				digit_flipper <= digit_flipper + 1'b1;
+       
+      end
+  
+endmodule
+
+

@@ -1,0 +1,26 @@
+// Code your testbench here
+// or browse Examples
+module part3_tb();
+  wire [3:0] digit_flipper;
+  wire [3:0] slow_count;
+  reg Clock;
+  
+  part3 uut(.Clock(Clock), .digit_flipper(digit_flipper), .slow_count(slow_count));
+  
+  initial
+    Clock = 1'b0;
+  
+  always
+     forever #10 Clock = ~Clock; 
+  
+  
+ 
+     //Dump waves (only required here)
+initial
+  begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+  end
+  
+    initial #10000 $finish;
+endmodule

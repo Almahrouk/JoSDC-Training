@@ -1,0 +1,101 @@
+module part1 (KEY, SW, LEDR, HEX3, HEX2, HEX1, HEX0);
+	input [1:0] KEY; 
+	input [9:0] SW; 
+	
+	output[9:0] LEDR; 
+	output[0:6] HEX3, HEX2, HEX1, HEX0;
+	
+	wire Clock, Resetn;
+	wire [7:0] A, A_reg;
+	wire [7:0] S, S_reg;
+	wire overflow, overflow_reg; 
+	wire carry, carry_reg;
+	
+	
+	assign Clock = KEY[0];
+	assign Resetn = KEY[1];
+	assign A = SW; 
+	
+	regn U_A (A, Clock, Resetn, A_reg);
+	
+	
+	assign {carry, S} = A_reg + S_reg;
+	assign overflow = (A_reg[7] ~^ S_reg[7]) & (A_reg[7] ^ S[7]);
+	
+	
+	regn U_S (S, Clock, Resetn, S_reg);
+	
+	regn U_carry (carry, Clock, Resetn,carry_reg);
+	defparam U_carry.n = 1;
+	
+	regn U_overflow (overflow, Clock, Resetn, overflow_reg);
+	defparam U_overflow.n = 1;
+	
+	assign LEDR[7:0] = S_reg;
+	assign LEDR[9] = overflow_reg;
+	assign LEDR[8] = carry_reg;
+		
+	// drive the displays through 7-seg decoders
+	hex7seg digit_3 (A_reg[7:4], HEX3);
+	hex7seg digit_2 (A_reg[3:0], HEX2);
+	hex7seg digit_1 (S_reg[7:4], HEX1);
+	hex7seg digit_0 (S_reg[3:0], HEX0);
+endmodule
+			
+
+// n bit register			
+module regn (R, Clock, Resetn, Q);
+	parameter n = 8;
+	input [n-1:0] R;
+	input Clock, Resetn;
+	output [n-1:0] Q;
+	reg [n-1:0] Q;	
+	
+	always @(posedge Clock or negedge Resetn)
+		if (!Resetn)
+			Q <= 'b0;
+		else
+			Q <= R;
+endmodule
+
+
+
+module hex7seg (hex, display);
+	input [3:0] hex;
+	output [0:6] display;
+
+	reg [0:6] display;
+
+	/*
+	 *       0  
+	 *      ---  
+	 *     |   |
+	 *    5|   |1
+	 *     | 6 |
+	 *      ---  
+	 *     |   |
+	 *    4|   |2
+	 *     |   |
+	 *      ---  
+	 *       3  
+	 */
+	always @ (hex)
+		case (hex)
+			4'h0: display = 7'b0000001;
+			4'h1: display = 7'b1001111;
+			4'h2: display = 7'b0010010;
+			4'h3: display = 7'b0000110;
+			4'h4: display = 7'b1001100;
+			4'h5: display = 7'b0100100;
+			4'h6: display = 7'b0100000;
+			4'h7: display = 7'b0001111;
+			4'h8: display = 7'b0000000;
+			4'h9: display = 7'b0000100;
+			4'hA: display = 7'b0001000;
+			4'hb: display = 7'b1100000;
+			4'hC: display = 7'b0110001;
+			4'hd: display = 7'b1000010;
+			4'hE: display = 7'b0110000;
+			4'hF: display = 7'b0111000;
+		endcase
+endmodule

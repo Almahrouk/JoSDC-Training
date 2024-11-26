@@ -1,0 +1,36 @@
+// Code your testbench here
+// or browse Examples
+// Testbench
+module test;
+
+  reg  Clock, x;
+  wire y;
+  wire [8:0] state;
+  
+  // Instantiate device under test
+  fsm FSM(.Clock(Clock), .x(x), .y(y), .state(state));
+ 
+  initial
+    Clock  = 1'b0;
+ 
+  always
+     forever #10 Clock = ~Clock; 
+  //Dump waves (only required here)
+initial
+  begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+  end
+
+      initial
+    begin
+     // Resetn = 1;
+      x = 0;
+    #100; x = 1;
+    #50; x = 0;
+         
+ 
+  end
+     initial #500 $finish;
+endmodule
+

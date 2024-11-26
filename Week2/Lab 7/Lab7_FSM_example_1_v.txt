@@ -1,0 +1,50 @@
+// Code your design here
+module fsm(clk, x, y, state);
+  input  clk;
+  input  x;
+  output y;
+  output reg [1:0] state;
+    
+  // State encodings
+  parameter [1:0]
+    STATE_0 = 2'b00,
+    STATE_1 = 2'b01,
+    STATE_2 = 2'b10,
+    STATE_3 = 2'b11;
+    
+  // State machine output
+  assign y = (state == STATE_3);
+    
+  // State transitions
+  always @(posedge clk) begin
+    case (state)
+      STATE_0:
+        if (~x) begin
+          state <= STATE_1;
+        end else begin
+          state <= STATE_0;
+        end
+      STATE_1:
+        if (x) begin
+          state <= STATE_2;
+        end else begin
+          state <= STATE_1;
+        end
+      STATE_2:
+        if (x) begin
+          state <= STATE_3;
+        end else begin
+          state <= STATE_1;
+        end
+      STATE_3:
+        if (x) begin
+          state <= STATE_1;
+        end else begin
+          state <= STATE_0;
+        end
+      default:
+        state <= STATE_0;
+    endcase
+  end
+
+endmodule

@@ -1,0 +1,38 @@
+// Code your testbench here
+// or browse Examples
+module part1_for_simulation_tb();
+  wire [7:0] Count;
+  reg Clock;
+  reg Resetn;
+  reg En;
+  
+  part1_for_simulation cnt0(.Clock(Clock),.Resetn(Resetn), .En(En), .Count(Count));
+  
+  initial
+    Clock = 1'b0;
+  
+  always
+    #5 Clock = ~Clock;
+  
+  initial
+    begin
+      En = 1'b1;
+      Resetn = 1'b0;
+      #10 Resetn = 1'b1;
+      #180 Resetn = 1'b0;
+      //#10 En = 1'b0;
+      #20 Resetn = 1'b1;
+      //#10 Resetn = 1'b0;
+      //#5 Resetn = 1'b1;
+      //#20 En = 1'b0;
+    end
+  
+     //Dump waves (only required here)
+initial
+  begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+  end
+  
+    initial #1000 $finish;
+endmodule
